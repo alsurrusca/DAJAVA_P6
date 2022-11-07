@@ -13,6 +13,11 @@ public class BankAccount {
     @Column(name = "bank_account_id")
     private int bankAccountId;
 
+    @ManyToOne
+    private User user;
+
+    @ManyToOne
+    private BankAccount bankAccount;
 
     @Column(name = "iban")
     private long iban;

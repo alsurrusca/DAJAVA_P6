@@ -3,7 +3,6 @@ package com.openclassrooms.paymybuddy.ProjectPayMyBuddy.model;
 import javax.persistence.*;
 import java.util.Date;
 
-
 @Entity
 @Table(name = "transaction")
 public class Transaction {
@@ -11,61 +10,34 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
-    private int transactionId;
+    private int transaction_id;
 
-    @ManyToOne(
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            }
-    )
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User debiteur;
 
-    @ManyToOne(
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            }
-    )
-    @JoinColumn(name = "debiteur")
-    private User debiteur; //le User qui paye
-
-    @ManyToOne(
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            }
-    )
-    @JoinColumn(name = "crediteur")
-    private User crediteur; //Le User qui reçoit
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "contact_user_id")
+    private User crediteur;
 
     @Column(name = "date")
     private Date date;
 
     @Column(name = "cost")
-    private float coast;
+    private Float cost;
 
     @Column(name = "comment")
     private String comment;
 
     @Column(name = "charge")
-    private float charge;
+    private Float charge;
 
-    public int getTransactionId() {
-        return transactionId;
+    public int getTransaction_id() {
+        return transaction_id;
     }
 
-    public void setTransactionId(int transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setTransaction_id(int transaction_id) {
+        this.transaction_id = transaction_id;
     }
 
     public Date getDate() {
@@ -76,12 +48,12 @@ public class Transaction {
         this.date = date;
     }
 
-    public float getCoast() {
-        return coast;
+    public Float getCost() {
+        return cost;
     }
 
-    public void setCoast(float coast) {
-        this.coast = coast;
+    public void setCost(Float cost) {
+        this.cost = cost;
     }
 
     public String getComment() {
@@ -92,11 +64,11 @@ public class Transaction {
         this.comment = comment;
     }
 
-    public float getCharge() {
+    public Float getCharge() {
         return charge;
     }
 
-    public void setCharge(float charge) {
+    public void setCharge(Float charge) {
         this.charge = charge;
     }
 

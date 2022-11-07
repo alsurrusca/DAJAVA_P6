@@ -1,6 +1,7 @@
 package com.openclassrooms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,28 +28,33 @@ public class User {
     @Column(name = "wallet")
     private float wallet;
 
-    @OneToMany(
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            }
-    )
-    private List<Transaction> transactions;
 
     @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.MERGE,
-                    CascadeType.PERSIST
-            }
-    )
-    @JoinTable(
-            name = "contact_transaction",
-            joinColumns = @JoinColumn(name = "contact_id"),
-            inverseJoinColumns = @JoinColumn(name = "transaction_id")
-    )
+            cascade = CascadeType.ALL,
+            //On ne veut pas de transaction orpheline si l'utilisateur supprime son compte
+            orphanRemoval = true,
+            //on récupère toutes les transactions d'un USER
+            fetch = FetchType.EAGER)
+    @JoinColumn(name = "transaction_id")
+    List<Transaction>transactions = new ArrayList<>();
 
-    private List<User> contact;
+
+    @ManyToMany(
+            //faire référence à l'attribut dans la seconde entité
+            cascade = CascadeType.ALL
+
+    )
+    @JoinColumn(name = "user_id")
+    private List<User> contacts = new ArrayList<>();
+
+    public void addContact (User user){
+        //ajout du contact
+        contacts.add(user);
+        //Chercher la liste de contact et ajouter l'objet
+        user.getContacts().add(this);
+    }
+
+    //FAIRE REMOVE
 
     public int getUserId() {
         return userId;
@@ -106,11 +112,11 @@ public class User {
         this.transactions = transactions;
     }
 
-    public List<User> getContact() {
-        return contact;
+    public List<User> getContacts() {
+        return contacts;
     }
 
-    public void setContact(List<User> contact) {
-        this.contact = contact;
+    public void setContacts(List<User> contacts) {
+        this.contacts = contacts;
     }
 }
