@@ -1,7 +1,11 @@
-package com.openclassrooms.paymybuddy.ProjectPayMyBuddy.repository;
+package com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository;
 
-import com.openclassrooms.paymybuddy.ProjectPayMyBuddy.model.Transaction;
+import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.Transaction;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
+
+@Repository
+public interface TransactionRepository extends CrudRepository <Transaction, Integer> {
+
 }

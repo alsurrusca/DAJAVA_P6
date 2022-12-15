@@ -1,4 +1,4 @@
-package com.openclassrooms.paymybuddy.ProjectPayMyBuddy.model;
+package com.openclassromms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -24,13 +24,11 @@ public class Transaction {
     private Date date;
 
     @Column(name = "cost")
-    private Float cost;
+    private Double cost;
 
     @Column(name = "comment")
     private String comment;
 
-    @Column(name = "charge")
-    private Float charge;
 
     public int getTransaction_id() {
         return transaction_id;
@@ -48,11 +46,11 @@ public class Transaction {
         this.date = date;
     }
 
-    public Float getCost() {
+    public Double getCost() {
         return cost;
     }
 
-    public void setCost(Float cost) {
+    public void setCost(Double cost) {
         this.cost = cost;
     }
 
@@ -62,14 +60,6 @@ public class Transaction {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public Float getCharge() {
-        return charge;
-    }
-
-    public void setCharge(Float charge) {
-        this.charge = charge;
     }
 
     public User getDebiteur() {

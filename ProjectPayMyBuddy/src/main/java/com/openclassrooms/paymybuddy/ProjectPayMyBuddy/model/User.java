@@ -1,4 +1,4 @@
-package com.openclassrooms.paymybuddy.ProjectPayMyBuddy.model;
+package com.openclassromms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,14 +19,14 @@ public class User {
     @Column(name = "firstname")
     private String firstName;
 
-    @Column(name = "address_mail")
-    private String addressMail;
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "password")
     private String password;
 
     @Column(name = "wallet")
-    private float wallet;
+    private double wallet;
 
 
     @OneToMany(
@@ -47,14 +47,14 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<User> contacts = new ArrayList<>();
 
+
+
     public void addContact (User user){
         //ajout du contact
         contacts.add(user);
         //Chercher la liste de contact et ajouter l'objet
         user.getContacts().add(this);
     }
-
-    //FAIRE REMOVE
 
     public int getUserId() {
         return userId;
@@ -80,13 +80,9 @@ public class User {
         this.firstName = firstName;
     }
 
-    public String getAddressMail() {
-        return addressMail;
-    }
+    public String getEmail() { return email; }
 
-    public void setAddressMail(String addressMail) {
-        this.addressMail = addressMail;
-    }
+    public void setEmail(String email) { this.email = email; }
 
     public String getPassword() {
         return password;
@@ -96,11 +92,11 @@ public class User {
         this.password = password;
     }
 
-    public float getWallet() {
+    public double getWallet() {
         return wallet;
     }
 
-    public void setWallet(float wallet) {
+    public void setWallet(double wallet) {
         this.wallet = wallet;
     }
 
@@ -119,4 +115,5 @@ public class User {
     public void setContacts(List<User> contacts) {
         this.contacts = contacts;
     }
+
 }

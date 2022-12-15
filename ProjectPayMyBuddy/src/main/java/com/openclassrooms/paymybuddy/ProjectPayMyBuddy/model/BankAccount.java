@@ -1,6 +1,4 @@
-package com.openclassrooms.paymybuddy.ProjectPayMyBuddy.model;
-
-import jdk.jfr.Enabled;
+package com.openclassromms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,13 +18,16 @@ public class BankAccount {
     private BankAccount bankAccount;
 
     @Column(name = "iban")
-    private long iban;
+    private String iban;
 
     @Column(name = "date")
     private Date date;
 
     @Column(name = "comment")
     private String comment;
+
+    @Column(name = "amount")
+    private float amount;
 
     public int getBankAccountId() {
         return bankAccountId;
@@ -36,11 +37,27 @@ public class BankAccount {
         this.bankAccountId = bankAccountId;
     }
 
-    public long getIban() {
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public String getIban() {
         return iban;
     }
 
-    public void setIban(long iban) {
+    public void setIban(String iban) {
         this.iban = iban;
     }
 
@@ -58,5 +75,13 @@ public class BankAccount {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
     }
 }

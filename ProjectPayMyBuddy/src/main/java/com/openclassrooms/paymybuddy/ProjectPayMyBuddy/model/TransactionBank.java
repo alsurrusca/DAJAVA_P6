@@ -1,8 +1,7 @@
-package com.openclassrooms.paymybuddy.ProjectPayMyBuddy.model;
+package com.openclassromms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "transaction_bank")
@@ -19,12 +18,17 @@ public class TransactionBank {
     @Column(name = "date")
     private Date date;
 
-    @Column(name = "value")
-    private Float value;
+    @Column(name = "accountNumber")
+    private double accountNumber;
+
+    @Column(name = "account")
+    private String account;
 
     @Column(name="comment")
     private String comment;
 
+    @Column(name="amount")
+    private float amount;
 
 
     public int getTransactionBankId() {
@@ -35,27 +39,55 @@ public class TransactionBank {
         this.transactionBankId = transactionBankId;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getDate(Date date) {
+        return this.date;
     }
 
     public void setDate(Date date) {
         this.date = date;
     }
 
-    public Float getValue() {
-        return value;
+    public User getUser() {
+        return user;
     }
 
-    public void setValue(Float value) {
-        this.value = value;
+    public double getAccountNumber(Long accountNumber) {
+        return this.accountNumber;
     }
 
-    public String getComment() {
-        return comment;
+    public void setAccountNumber(double accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    public String getComment(String comment) {
+        return this.comment;
     }
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public User getUser(User user) {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
