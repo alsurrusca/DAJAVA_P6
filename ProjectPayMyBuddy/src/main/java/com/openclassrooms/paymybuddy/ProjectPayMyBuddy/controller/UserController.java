@@ -56,7 +56,7 @@ public class UserController {
      * Create new User
      * @param user
      * @return 200 if it's ok / 400 if failed
-     */
+
     @RequestMapping("/newUser")
     @PostMapping
     private String signupUser(@ModelAttribute UserDTO user, Model model, RedirectAttributes redirAttrs) {
@@ -80,7 +80,7 @@ public class UserController {
         return "newUser";
 
     }
-
+*/
 
     /**
      * Get user by Email
