@@ -5,6 +5,7 @@ import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.IdentifyDto;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.LoginDto;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.UserDTO;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.User;
+import com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository.UserRepository;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -54,16 +57,30 @@ public class UserController {
      * @param user
      * @return 200 if it's ok / 400 if failed
      */
-    @RequestMapping(value = "/newUser")
-    public ResponseEntity createUser(User user) {
-        if ((userService.getByEmail(user.getEmail())).isEmpty()) {
+    @RequestMapping("/newUser")
+    @PostMapping
+    private String signupUser(@ModelAttribute UserDTO user, Model model, RedirectAttributes redirAttrs) {
+        String signupError = null;
+        Optional<User> existsUser = userService.getByEmail(user.getEmail());
+        if (existsUser != null) {
+            signupError = "The email already exists";
+        }
+        if (signupError == null) {
             userService.createUser(user);
-            log.info("SUCCESS create User");
-            return ResponseEntity.ok(modelMapper.map(user, UserDTO.class));
         }
 
-        return ResponseEntity.badRequest().build();
+        if (signupError == null) {
+            log.info("Success - Create User");
+            redirAttrs.addFlashAttribute("message", "You've successfully signed up, please login.");
+            return "login";
+        } else {
+            model.addAttribute("signupError", true);
+        }
+
+        return "newUser";
+
     }
+
 
     /**
      * Get user by Email

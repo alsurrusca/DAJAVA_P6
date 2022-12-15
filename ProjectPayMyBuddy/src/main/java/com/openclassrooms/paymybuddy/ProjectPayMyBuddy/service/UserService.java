@@ -3,6 +3,7 @@ package com.openclassromms.paymybuddy.ProjectPayMyBuddy.service;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.EmailDTO;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.IdentifyDto;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.LoginDto;
+import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.UserDTO;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.User;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +34,14 @@ public class UserService {
      * @param user
      * @return new User
      */
-    public User createUser(User user){
+    public UserDTO createUser(UserDTO user){
         //String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(user.getPassword());
         user.setEmail(user.getEmail());
         user.setFirstName(user.getFirstName());
         user.setName(user.getName());
         user.setWallet(user.getWallet());
-        return userRepository.save(user);
+        return user;
     }
 
     public User saveUser(User user){
