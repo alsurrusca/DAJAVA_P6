@@ -7,6 +7,15 @@
 </head>
 <body>
 <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+
+<tr th:each="user : ${users}">
+    <td th:text="${user.getName}"></td>
+    <td th:text="${user.getEmail}"></td>
+    <td th:text="${user.getPassword}"></td>
+    <td th:text="${user.getFirstName}"></td>
+    <td th:tex="${user.getWallet}"></td>
+
+</tr>
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Sign Out"/>
 </form>
