@@ -7,10 +7,13 @@ import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.UserDTO;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.User;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+
 
 @Service
 public class UserService {
@@ -18,6 +21,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private BCryptPasswordEncoder encoder;
+    
     public boolean login(LoginDto loginDto){
         User user = getByEmail(loginDto.getEmail()).get();
         if(loginDto.getPassword().equals(user.getPassword())){
@@ -33,11 +38,11 @@ public class UserService {
      * Create new User
      * @param user
      * @return new User
-     */
+*/
     public UserDTO createUser(UserDTO user){
         //String hashedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(user.getPassword());
         user.setEmail(user.getEmail());
+        user.setPassword(user.getPassword());
         user.setFirstName(user.getFirstName());
         user.setName(user.getName());
         user.setWallet(user.getWallet());
@@ -101,5 +106,16 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+/**
+    public User saveUser(UserDTO user) {
+        User user1 = new User();
+        user1.setFirstName(user.getFirstName());
+        user1.setName(user.getName());
+        user1.setEmail(user.getEmail());
+        user1.setPassword(encoder.encode(user.getPassword()));
+        user1.setWallet(user.getWallet());
+        return userRepository.save(user1);
+    }
 
+ **/
 }

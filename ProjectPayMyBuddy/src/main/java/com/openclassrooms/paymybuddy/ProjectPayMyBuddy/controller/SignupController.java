@@ -3,6 +3,8 @@ package com.openclassromms.paymybuddy.ProjectPayMyBuddy.controller;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.UserDTO;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.User;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -16,9 +18,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/signup")
+@RequestMapping("/newUser")
 public class SignupController {
-    private UserService userService;
+
+    Logger log = LoggerFactory.getLogger(UserController.class);
+
+
+    private UserService userService = new UserService();
 
 
     @Autowired
@@ -27,30 +33,47 @@ public class SignupController {
     }
 
     @GetMapping
-    public String signupView() {
-        return "signup";
+    public String signupView(Model model) {
+        model.addAttribute("user",new User());
+
+        return "newUser";
     }
 
+    /**
     @PostMapping
-    private String signupUser(@ModelAttribute UserDTO user, Model model, RedirectAttributes redirAttrs) {
+    public String signupUser(@ModelAttribute UserDTO user, Model model, RedirectAttributes redirAttrs) {
         String signupError = null;
         Optional<User> existsUser = userService.getByEmail(user.getEmail());
         if (existsUser != null) {
             signupError = "The email already exists";
         }
         if (signupError == null) {
-            userService.saveUser(user);
+            userService.createUser(user);
         }
 
         if (signupError == null) {
             redirAttrs.addFlashAttribute("message", "You've successfully signed up, please login.");
+
             return "redirect:/login";
         } else {
             model.addAttribute("signupError", true);
         }
 
-        return "signup";
 
+        return "newUser";
+
+    }
+
+    */
+    @PostMapping
+    public String newUser(@ModelAttribute("createUser") UserDTO user){
+        if(userService.getByEmail(user.getEmail()).isEmpty()){
+            userService.createUser(user);
+            log.info("Success create user");
+            return "redirect:/login";
+        }
+
+        return "newUser";
     }
 
 }

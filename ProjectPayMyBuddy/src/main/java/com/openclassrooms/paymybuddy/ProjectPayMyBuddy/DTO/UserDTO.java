@@ -7,7 +7,7 @@ public class UserDTO {
     public String name;
     public String firstName;
     public String password;
-    public String wallet;
+    public double wallet;
 
     public String getEmail() {
         return email;
@@ -41,11 +41,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public String getWallet() {
+    public double getWallet() {
         return wallet;
     }
 
-    public void setWallet(String wallet) {
+    public void setWallet(double wallet) {
         this.wallet = wallet;
     }
 }

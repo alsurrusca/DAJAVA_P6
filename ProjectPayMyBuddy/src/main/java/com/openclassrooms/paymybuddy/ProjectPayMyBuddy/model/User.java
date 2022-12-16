@@ -36,7 +36,7 @@ public class User {
             //on récupère toutes les transactions d'un USER
             fetch = FetchType.EAGER)
     @JoinColumn(name = "transaction_id")
-    List<Transaction>transactions = new ArrayList<>();
+    List<Transaction> transactions = new ArrayList<>();
 
 
     @ManyToMany(
@@ -48,8 +48,7 @@ public class User {
     private List<User> contacts = new ArrayList<>();
 
 
-
-    public void addContact (User user){
+    public void addContact(User user) {
         //ajout du contact
         contacts.add(user);
         //Chercher la liste de contact et ajouter l'objet
@@ -80,9 +79,13 @@ public class User {
         this.firstName = firstName;
     }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getPassword() {
         return password;
@@ -115,5 +118,4 @@ public class User {
     public void setContacts(List<User> contacts) {
         this.contacts = contacts;
     }
-
 }
