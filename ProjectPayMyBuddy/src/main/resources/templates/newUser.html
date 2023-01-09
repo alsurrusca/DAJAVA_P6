@@ -13,35 +13,35 @@
     <h1>Pay My Buddy - Signup</h1>
         <fieldset>
             <legend> Signup</legend>
-            <form  th:action="@{/newUser}" th:object="${user}" method="POST" >
+            <form  th:action="@{/newUser}" th:object="${userDTO}" method="POST" >
 
                 <div class="form-group">
                 <label for="email">Email</label>
                                     <br>
-                <input type="text" class="form-control" id="email" placeholder="Email" th:value="${user?.email}" required>
+                <input name="email" type="text" class="form-control" id="email" placeholder="Email" th:value="${userDTO?.email}" required>
 
             </div>
 
             <div class="form-group">
                 <label for="password"> Password </label>
                 <br>
-                <input type="password" class="form-control" id="password" placeholder="password" th:value="${user?.password}"required>
+                <input name ="password" type="password" class="form-control" id="password" placeholder="password" th:value="${userDTO?.password}"required>
             </div>
 
             <div class="form-group">
                 <label for="firstName"> Firstname </label>
                 <br>
-                <input name="firstName" type="text" class="form-control" id="firstName" placeholder="firstName" th:value="${user?.firstName}"required>
+                <input name="firstName" type="text" class="form-control" id="firstName" placeholder="firstName" th:value="${userDTO?.firstName}"required>
             </div>
 
             <div class="form-group">
                 <label for="lastname"> Lastname </label>
                 <br>
-                <input type="text" class="form-control" id="lastname" placeholder="lastname" th:value="${user?.name}"required>
+                <input name="name" type="text" class="form-control" id="lastname" placeholder="lastname" th:value="${userDTO?.name}"required>
             </div>
             <div class="input-group mb-3">
                 <div class="input-group-prepend"><span class="input-group-text">Wallet</span></div>
-                <input type="number" class="form-control" aria-label="Somme arrondie" th:value="${user?.wallet}">
+                <input name="wallet" type="number" class="form-control" aria-label="Somme arrondie" th:value="${userDTO?.wallet}" required>
             </div>
             <button class="btn btn-primary" type="submit">Sign up</button>
 
@@ -53,6 +53,6 @@
             </form>
         </fieldset>
 
-
+</div>
 </body>
 </html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>PayWebApp</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+<section>
+    <div class="d-flex">
+        <div class="me-auto p-2 bd-highlight">
+            <div class="badge bg-success text-wrap fs-3 text-center">Pay My Buddy</div>
+        </div>
+        <div class="py-3">
+            <ul class="nav text-primary">
+                <li class="nav-item"><a class="nav-link" th:href="@{/home}">Home</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/transfer}">Transfer</a></li>
+                <li><a class="nav-link" th:href="@{/profil}">Profil</a></li>
+                <li><a class="nav-link" th:href="@{/addFriend}">Contact</a></li>
+                <form th:action="@{/logout}" method="post">
+                    <input class="nav-link btn btn-link mb-2" type="submit" value="Log off">
+                </form>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section>
+
+    <div class="p-3 mb-2 bg-light text-primary text-start fs-5 ">
+        <span>Home</span>
+    </div>
+
+</section>
+<body>
+
+    <!-- Make Transfer -->
+
+    <div class="bg-light py-4" >
+        <form class="form-group" th:action="@{/transfer}" method="POST">
+            <input type="hidden" name="userAccount" >
+            <div class="row mb-2" style="margin-left: 10em">
+                <div class="col-md-2">
+                    <label for="toEmail">To Connect: </label>
+                    <select id="toEmail" name="toEmail" class="custom-select" required>
+                        <option value="" selected disabled hidden> Select a connection</option>
+                        <option th:each="user : ${contact}" th:value="${user.getEmail()}"
+                                th:text="${user.getEmail()}">Email</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="amount">Amount (€): </label>
+                    <input class="form-control" type="number" min="1" value="0" step=".05" name="amount" id="amount" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="comment">Comment : </label>
+                    <input class="form-control" type="text" name="comment" id="comment" required>
+                </div>
+                <div class="col-md-2 btn-lg" style="margin-top: 1em">
+                    <div class="col-lg-2"><a class="btn btn-lg btn-success class2">Pay</a></div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</section>
+<br>
+<section>
+    <nav class="bg-light py-4">
+        <div class="container text-center">
+            <div class="mx-auto" style="width: 400px;">
+            </div>
+        </div>
+
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>Connections</th>
+                <th>Comment</th>
+                <th>Amount</th>
+            </tr>
+            </thead>
+        </table>
+
+
+    </nav>
+    <br>
+</section>
+
+
+
+</body>
+<footer class="mt-auto text-center">
+
+    <p>PayMyBuddy © 2022 - 2023 / V.1.0.0</p>
+</footer>
+
+</html>
