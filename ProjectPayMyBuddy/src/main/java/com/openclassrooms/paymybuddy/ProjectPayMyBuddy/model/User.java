@@ -48,6 +48,7 @@ public class User {
     private List<User> contacts = new ArrayList<>();
 
 
+
     public void addContact(User user) {
         //ajout du contact
         contacts.add(user);
@@ -118,4 +119,12 @@ public class User {
     public void setContacts(List<User> contacts) {
         this.contacts = contacts;
     }
+
+    public Object getContacts(String firstName, String name) {
+        this.firstName = firstName;
+        this.name = name;
+       return getContacts();
+    }
+
+
 }

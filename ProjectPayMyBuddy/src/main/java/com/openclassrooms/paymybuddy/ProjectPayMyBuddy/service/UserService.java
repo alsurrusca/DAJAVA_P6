@@ -2,12 +2,15 @@ package com.openclassromms.paymybuddy.ProjectPayMyBuddy.service;
 
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.EmailDTO;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.IdentifyDto;
-import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.LoginDto;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.UserDTO;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.User;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +24,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder encoder;
-    
+    @Autowired
+    private PasswordEncoder encoder;
+
+    /**
     public boolean login(LoginDto loginDto){
         User user = getByEmail(loginDto.getEmail()).get();
         if(loginDto.getPassword().equals(user.getPassword())){
@@ -32,21 +37,23 @@ public class UserService {
         return false;
     }
 
-
+**/
 
     /**
      * Create new User
-     * @param user
+     * @param userDTO
      * @return new User
 */
-    public UserDTO createUser(UserDTO user){
-        //String hashedPassword = passwordEncoder.encode(user.getPassword());
-        user.setEmail(user.getEmail());
-        user.setPassword(user.getPassword());
-        user.setFirstName(user.getFirstName());
-        user.setName(user.getName());
-        user.setWallet(user.getWallet());
-        return user;
+    public User createUser(UserDTO userDTO){
+        //String hashedPassword = encoder.encode(userDTO.getPassword());
+        User user = new User();
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(encoder.encode(userDTO.getPassword()));
+        user.setFirstName(userDTO.getFirstName());
+        user.setName(userDTO.getName());
+        user.setWallet(userDTO.getWallet());
+
+        return userRepository.save(user);
     }
 
     public User saveUser(User user){
@@ -60,12 +67,11 @@ public class UserService {
      */
 
     public boolean updateMail(EmailDTO userDTO){
-        Optional<User> optionalUser = userRepository.findByEmail(userDTO.getOldEmail());
-        if(optionalUser.isPresent()){
-            User userInDB = optionalUser.get();
-            if(userInDB.getEmail().equals(userDTO.getOldEmail())){
-                userInDB.setEmail(userDTO.getNewEmail());
-                userRepository.save(userInDB);
+        User user = userRepository.findByEmail(userDTO.getOldEmail());
+        if(user != null){
+            if(user.getEmail().equals(userDTO.getOldEmail())){
+                user.setEmail(userDTO.getNewEmail());
+                userRepository.save(user);
                 return true;
             }
         }
@@ -78,10 +84,9 @@ public class UserService {
      * @return new password
      */
     public boolean changePassword(IdentifyDto identifyDto){
-        Optional<User>optionalUser = userRepository.findByEmail(identifyDto.getEmail());
-        if(optionalUser.isPresent()){
-            User user = optionalUser.get();
-            if(identifyDto.getOldPassword().equals(user.getPassword())){
+        User user = userRepository.findByEmail(identifyDto.getEmail());
+        if(user != null){
+                        if(identifyDto.getOldPassword().equals(user.getPassword())){
                 user.setPassword(identifyDto.getNewPassword());
                 return true;
             }
@@ -90,8 +95,9 @@ public class UserService {
     }
 
     public void addFriend(User owner, User contact){
-        owner.getContacts().add(contact);
+        owner.addContact(contact);
         userRepository.save(owner);
+
     }
 
     public Optional<User> getById(Integer id){
@@ -102,7 +108,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getByEmail(String email) {
+    public User getByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -118,4 +124,19 @@ public class UserService {
     }
 
  **/
+
+public static String getUserMail() {
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    Authentication authentication = securityContext.getAuthentication();
+    String userName = null;
+    if (authentication != null) {
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        userName = userDetails.getUsername();
+
+    }
+    //log.debug("Negative Balance exception trigerred");
+    return userName;
+}
+
 }

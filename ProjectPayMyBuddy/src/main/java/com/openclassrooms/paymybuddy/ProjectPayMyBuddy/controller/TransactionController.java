@@ -8,18 +8,20 @@ import com.openclassromms.paymybuddy.ProjectPayMyBuddy.service.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
 
 @Controller
+@RequestMapping("/transfer")
 public class TransactionController {
 
     @Autowired
@@ -31,13 +33,25 @@ public class TransactionController {
     Logger log = LoggerFactory.getLogger(TransactionController.class);
 
     //Make transaction
-    @PostMapping(value = "/transaction")
-    public ResponseEntity makeTransaction(@RequestBody TransactionDto transactionDto){
-        if(transactionService.makePayment(transactionDto)){
-            log.info("Transaction Success");
-            return ResponseEntity.ok(transactionDto);
+    @GetMapping
+    public String transfer(){
+        return "transfer";
+    }
+
+    @PostMapping
+    public String sendMoney(@AuthenticationPrincipal UserPrincipal user, String userDebtorEmail,
+                            float amount, String description, RedirectAttributes Redir) {
+        User userConnected = userService.getByEmail(user.getName());
+
+
+        if (amount > 0 && amount <= userConnected.getWallet()) {
+            transactionService.makePayment((User) user, userDebtorEmail, description, amount);
+            Redir.addFlashAttribute("transactionsuccess", "OK");
+            return "redirect:/transfer";
         } else {
-            return ResponseEntity.badRequest().body(transactionDto);
+            log.error("Error amount");
+            Redir.addFlashAttribute("erroramount", "KO");
+            return "redirect:/transfer";
         }
     }
 

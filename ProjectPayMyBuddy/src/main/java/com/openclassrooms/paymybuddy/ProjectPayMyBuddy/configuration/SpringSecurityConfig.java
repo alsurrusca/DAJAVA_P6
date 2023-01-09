@@ -9,6 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 
 import javax.sql.DataSource;
@@ -25,27 +29,42 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      .dataSource(dataSource)
      .usersByUsernameQuery("SELECT email, password, true FROM user WHERE email = ? ")
      .authoritiesByUsernameQuery("SELECT email, 'ROLE_USER' FROM user WHERE email = ?");
+
+
      }
 
+  /**
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
         authenticationManagerBuilder.inMemoryAuthentication()
                 .withUser("spring").password(passwordEncoder().encode("test")).roles("ADMIN");
     }
-
+**/
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .antMatchers("/", "/newUser", "/personList").permitAll()
+                        .antMatchers("/", "/newUser").permitAll()
                         .anyRequest().authenticated()
+
                 )
 
-                .formLogin((form) -> form
-                        .loginPage("/login")
-                        .permitAll()
+                .formLogin((form) -> {
+                            try {
+                                form
+                                        .loginPage("/login")
+                                        .permitAll()
+                                        .defaultSuccessUrl("/home")
+                                        .and()
+                                        .rememberMe().tokenValiditySeconds(7*24*60*60);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                 )
+
                 .logout((logout) -> logout.permitAll())
         ;
 
@@ -56,6 +75,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
 
 /**
@@ -77,6 +97,5 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
  public PasswordEncoder passwordEncoder() {
  return new BCryptPasswordEncoder();
  }
- **/
-
+**/
 }

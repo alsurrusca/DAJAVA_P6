@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,14 +41,23 @@ public class UserController {
     //Que dois je faire : login, logout, inscription, ajouter un user, nouvel utilisateur, change password et email
 
 
-    @GetMapping("/login")
+    @GetMapping({"/login","/"})
     public String login(){return "login";}
 
-    @GetMapping({"/home","/"})
-    public String home() {
+
+    @GetMapping("/home")
+    public String home(Model model) {
+        String userPrincipalEmail = userService.getUserMail();
+        User user = new User();
+
+        user = userService.getByEmail(userPrincipalEmail);
+
+        model.addAttribute("username", userPrincipalEmail);
+        model.addAttribute("firstName", user.getFirstName());
+
         return "home";
     }
-
+/**
     @GetMapping("/personList")
     public String getAllUser(Model model) {
         List<User> listOfUser = userService.getAllUser();
@@ -52,36 +65,7 @@ public class UserController {
         return "personList";
     }
 
-    /**
-     * Create new User
-     * @param user
-     * @return 200 if it's ok / 400 if failed
-
-    @RequestMapping("/newUser")
-    @PostMapping
-    private String signupUser(@ModelAttribute UserDTO user, Model model, RedirectAttributes redirAttrs) {
-        String signupError = null;
-        Optional<User> existsUser = userService.getByEmail(user.getEmail());
-        if (existsUser != null) {
-            signupError = "The email already exists";
-        }
-        if (signupError == null) {
-            userService.createUser(user);
-        }
-
-        if (signupError == null) {
-            log.info("Success - Create User");
-            redirAttrs.addFlashAttribute("message", "You've successfully signed up, please login.");
-            return "login";
-        } else {
-            model.addAttribute("signupError", true);
-        }
-
-        return "newUser";
-
-    }
-*/
-
+**/
     /**
      * Get user by Email
      * @param email
@@ -89,54 +73,18 @@ public class UserController {
      */
     @GetMapping(value = "/getUser")
     public ResponseEntity<UserDTO> getByEmail(@RequestParam("email") String email){
-        Optional<User> user = userService.getByEmail(email);
-        if(user.isEmpty()){
+        User user = userService.getByEmail(email);
+        if(user != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         log.info("Success - Find User by Email");
-        return ResponseEntity.ok(modelMapper.map(user.get(), UserDTO.class));
+        return ResponseEntity.ok(modelMapper.map(user, UserDTO.class));
     }
 
-    /**
-     * Login user
-     * @param loginDto - user's email & password
-     * @return 200 if it's ok / 400 if failed
-     */
-
-    @PostMapping(value="/login")
-    public ResponseEntity login(@RequestBody LoginDto loginDto){
-        if(userService.getByEmail(loginDto.getEmail()).isPresent()){
-            if(userService.login(loginDto)){
-                log.info("Connection Success");
-                return ResponseEntity.ok().build();
-            }
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-    //A VOIR CAR PAS SURE !!
-    @PutMapping(value = "/addFriend")
-    public ResponseEntity addFriend(@PathVariable Integer user, @PathVariable Integer contact) {
-        //1 voir si l'utilisateur existe
-        if(userService.getById(user).isEmpty() || userService.getById(contact).isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
-        //on récupère les id
-        User owner = userService.getById(user).get();
-        User friend = userService.getById(contact).get();
-
-        if(!owner.getContacts().contains(friend)){
-            userService.addFriend(owner,friend);
-            log.info("Add friend SUCCES");
-            return ResponseEntity.status(200).build();
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
 
     @PutMapping(value = "/passwordModify")
     public ResponseEntity modifyPassword(@RequestBody IdentifyDto modifyPassword){
-        if(userService.getByEmail(modifyPassword.getEmail()).isPresent()){
+        if(userService.getByEmail(modifyPassword.getEmail()) != null) {
             if(userService.changePassword(modifyPassword)){
                 log.info("Password was updated with SUCCESS");
                 return ResponseEntity.ok().build();
@@ -147,7 +95,7 @@ public class UserController {
 
     @PutMapping(value = "/emailModify")
     public ResponseEntity modifyEmail(@RequestBody EmailDTO modifyEmail){
-        if(userService.getByEmail(modifyEmail.getOldEmail()).isPresent()){
+        if(userService.getByEmail(modifyEmail.getOldEmail()) != null) {
             if(userService.updateMail(modifyEmail)){
                 log.info("Email modify with SUCCES");
                 return ResponseEntity.ok().build();
@@ -155,7 +103,6 @@ public class UserController {
         }
         return ResponseEntity.badRequest().build();
     }
-
 
 }
 

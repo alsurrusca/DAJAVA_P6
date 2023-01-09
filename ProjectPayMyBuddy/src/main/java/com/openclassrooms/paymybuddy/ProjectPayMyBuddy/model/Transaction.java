@@ -1,6 +1,7 @@
 package com.openclassromms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -21,14 +22,27 @@ public class Transaction {
     private User crediteur;
 
     @Column(name = "date")
-    private Date date;
+    private LocalDateTime date;
 
     @Column(name = "cost")
-    private Double cost;
+    private float cost;
 
     @Column(name = "comment")
     private String comment;
 
+    @Column(name = "fee")
+    private float fee;
+
+    public Transaction(User userCreditor, User userDebiteur, float amount, LocalDateTime inTime, String comment, float fee) {
+        this.crediteur = userCreditor;
+        this.debiteur = userDebiteur;
+        this.cost = amount;
+        this.date = inTime;
+        this.comment = comment;
+        this.fee = amount * FEE;
+    }
+
+    private static final float FEE = 0.005f;
 
     public int getTransaction_id() {
         return transaction_id;
@@ -36,30 +50,6 @@ public class Transaction {
 
     public void setTransaction_id(int transaction_id) {
         this.transaction_id = transaction_id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Double getCost() {
-        return cost;
-    }
-
-    public void setCost(Double cost) {
-        this.cost = cost;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public User getDebiteur() {
@@ -76,5 +66,41 @@ public class Transaction {
 
     public void setCrediteur(User crediteur) {
         this.crediteur = crediteur;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public float getCost() {
+        return cost;
+    }
+
+    public void setCost(float cost) {
+        this.cost = cost;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public float getFee() {
+        return fee;
+    }
+
+    public void setFee(float fee) {
+        this.fee = fee;
+    }
+
+    public static float getFEE() {
+        return FEE;
     }
 }

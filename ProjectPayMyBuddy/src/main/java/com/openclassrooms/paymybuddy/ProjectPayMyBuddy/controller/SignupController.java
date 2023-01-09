@@ -39,41 +39,15 @@ public class SignupController {
         return "newUser";
     }
 
-    /**
-    @PostMapping
-    public String signupUser(@ModelAttribute UserDTO user, Model model, RedirectAttributes redirAttrs) {
-        String signupError = null;
-        Optional<User> existsUser = userService.getByEmail(user.getEmail());
-        if (existsUser != null) {
-            signupError = "The email already exists";
-        }
-        if (signupError == null) {
-            userService.createUser(user);
-        }
-
-        if (signupError == null) {
-            redirAttrs.addFlashAttribute("message", "You've successfully signed up, please login.");
-
-            return "redirect:/login";
-        } else {
-            model.addAttribute("signupError", true);
-        }
-
-
-        return "newUser";
-
-    }
-
-    */
     @PostMapping
     public String newUser(@ModelAttribute("createUser") UserDTO user){
-        if(userService.getByEmail(user.getEmail()).isEmpty()){
+        if(userService.getByEmail(user.getEmail()) == null) {
             userService.createUser(user);
             log.info("Success create user");
             return "redirect:/login";
         }
 
-        return "newUser";
+        return "signupError";
     }
 
 }

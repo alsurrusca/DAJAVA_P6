@@ -8,6 +8,7 @@ import com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,11 @@ public class TransactionService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    private static final float FEE = 0.005f;
 
     @Autowired
     private TransactionRepository transactionRepository;
@@ -33,36 +39,20 @@ public class TransactionService {
         return fromUser.getWallet() > total && fromUser.getContacts().contains(toUser);
     }
 
-    public boolean makePayment(TransactionDto transactionDto) {
-        if (userRepository.findById(transactionDto.getSendId()).isEmpty() || userRepository.findById(transactionDto.getReceiveId()).isEmpty()
-                || transactionDto.getAmount() <= 0) {
-            return false;
-        }
+    public void makePayment(User userCreditor, String userDebtorEmail, String comment, float amount) {
+        User userDebiteur = userService.getByEmail(userDebtorEmail);
+        LocalDateTime inTime = LocalDateTime.now();
+        float fee = amount * FEE;
 
-        // Fee of PayMyBuddy = 5% of transaction
-        double amount = transactionDto.getAmount();
-        double fee = amount * 0.5;
-        double total = amount + fee;
+        if (userCreditor.getWallet() < amount || amount < 0) {
+            System.out.println("Transfer cannot be made");
+        } else {
+            Transaction transaction = new Transaction(userCreditor, userDebiteur, amount, inTime, comment, fee);
 
-        User fromUser = userRepository.findById(transactionDto.getSendId()).get();
-        User toContact = userRepository.findById(transactionDto.getReceiveId()).get();
-
-        if (paymentAuthorized(fromUser, toContact, total)) {
-            fromUser.setWallet(fromUser.getWallet() - total);
-            toContact.setWallet(toContact.getWallet() + amount);
-            Transaction transaction = new Transaction();
-            transaction.setDebiteur(fromUser);
-            transaction.setCrediteur(toContact);
-            transaction.setCost(amount);
-            transaction.setDate(new Date());
-            transaction.setComment(transactionDto.getComment());
+            userCreditor.setWallet(userCreditor.getWallet() - amount);
+            userDebiteur.setWallet(userDebiteur.getWallet() + (amount - fee));
             transactionRepository.save(transaction);
-            userRepository.save(fromUser);
-            userRepository.save(toContact);
-            return true;
         }
-        return false;
+
     }
-
-
 }
