@@ -17,11 +17,14 @@
         </div>
         <div class="py-3">
             <ul class="nav text-primary">
-                <li class="nav-item"><a class="nav-link" th:href="@{/home}">Home</a>
-                </li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/transfer}">Transfer</a></li>
-                <li><a class="nav-link" th:href="@{/profil}">Profil</a></li>
+                <li><a class="nav-link" th:href="@{/home}">Home</a></li>
+                <li><a class="nav-link" th:href="@{/transfer}">Transfer</a></li>
+                <li><a class="nav-link" th:href="@{/bankTransaction}">Bank Transaction</a></li>
+                <li><a class="nav-link" th:href="@{/newBankAccount}">Bank Account</a></li>
+                <li><a class="nav-link" th:href="@{/transferMoney}">Transfer Money</a></li>
                 <li><a class="nav-link" th:href="@{/addFriend}">Contact</a></li>
+                <li><a class="nav-link" th:href="@{/profil}">Profil</a></li>
+
                 <form th:action="@{/logout}" method="post">
                     <input class="nav-link btn btn-link mb-2" type="submit" value="Log off">
                 </form>

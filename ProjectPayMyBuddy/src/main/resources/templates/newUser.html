@@ -9,6 +9,7 @@
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 <body>
+
 <div class="container">
     <h1>Pay My Buddy - Signup</h1>
         <fieldset>
@@ -39,10 +40,7 @@
                 <br>
                 <input name="name" type="text" class="form-control" id="lastname" placeholder="lastname" th:value="${userDTO?.name}"required>
             </div>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend"><span class="input-group-text">Wallet</span></div>
-                <input name="wallet" type="number" class="form-control" aria-label="Somme arrondie" th:value="${userDTO?.wallet}" required>
-            </div>
+
             <button class="btn btn-primary" type="submit">Sign up</button>
 
 
