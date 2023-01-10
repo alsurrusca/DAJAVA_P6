@@ -1,40 +1,55 @@
 package com.openclassromms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "bank_account")
 public class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bank_account_id")
-    private int bankAccountId;
+    @Column(name = "id")
+    private int id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    private BankAccount bankAccount;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "iban")
     private String iban;
 
-    @Column(name = "date")
-    private Date date;
+    @OneToMany(cascade = CascadeType.ALL,
+    orphanRemoval = true,
+    fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private List<TransactionBank> transactionBankList = new ArrayList<>();
 
-    @Column(name = "comment")
-    private String comment;
+    public BankAccount(){}
 
-    @Column(name = "amount")
-    private float amount;
-
-    public int getBankAccountId() {
-        return bankAccountId;
+    public BankAccount (int id, User user, String name, String iban){
+        this.id = id;
+        this.user = user;
+        this.name = name;
+        this.iban = iban;
     }
 
-    public void setBankAccountId(int bankAccountId) {
-        this.bankAccountId = bankAccountId;
+    public BankAccount (User user, String name, String iban) {
+        this.user = user;
+        this.name = name;
+        this.iban = iban;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public User getUser() {
@@ -45,43 +60,17 @@ public class BankAccount {
         this.user = user;
     }
 
-    public BankAccount getBankAccount() {
-        return bankAccount;
+    public String getName() {
+        return name;
     }
 
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getIban() {
         return iban;
     }
 
-    public void setIban(String iban) {
-        this.iban = iban;
-    }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public float getAmount() {
-        return amount;
-    }
-
-    public void setAmount(float amount) {
-        this.amount = amount;
-    }
 }

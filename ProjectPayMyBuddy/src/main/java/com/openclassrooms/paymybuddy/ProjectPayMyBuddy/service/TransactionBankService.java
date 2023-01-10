@@ -1,12 +1,14 @@
 package com.openclassromms.paymybuddy.ProjectPayMyBuddy.service;
 
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.BankAccount;
+import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.Transaction;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.TransactionBank;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.User;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository.TransactionBankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,47 +21,40 @@ public class TransactionBankService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BankAccountService bankAccountService;
 //Transaction entre un USER et sa banque
 
 
+    public List<TransactionBank> getAllBankTransactions() {
+        return transactionBankRepository.findAll();
+    }
 
-    public boolean processTransaction(TransactionBank bankService) {
-        //On regarde si il a de l'argent ou non
-        if (bankService.getAmount() == 0) {
-            return false;
-        }
+    public TransactionBank addBankTransaction(TransactionBank bankTransaction) {
+        return transactionBankRepository.save(bankTransaction);
+    }
 
-        User user = bankService.getUser();
-        //la valeur absolu du compte
-        double amount = Math.abs(bankService.getAmount());
+    public void depositToBank(User user, float amount) {
+        User userConnected = userService.getByEmail(user.getEmail());
 
-        if (bankService.getAmount() > 0) {
-            user.setWallet(user.getWallet() + amount);
-        } else if (bankService.getAmount() < 0 && amount <= user.getWallet()) {
-            user.setWallet(user.getWallet() - amount);
+        if (userConnected.getWallet() < amount || amount < 0) {
+            System.out.println("Transfer cannot be made");
         } else {
-            return false;
+            TransactionBank transaction = new TransactionBank(user,amount);
+
+            userConnected.setWallet(userConnected.getWallet() - amount);
+            transactionBankRepository.save(transaction);
         }
-
-        userService.saveUser(user);
-        return true;
     }
 
-    public List<TransactionBank> findAllTransactionByUser(User user) {
-        return transactionBankRepository.findAllByUser(user);
-    }
+    public void transferToSite(User user, float amount) {
 
-    public TransactionBank save(TransactionBank bank){
-        return transactionBankRepository.save(bank);
-    }
-
-    public TransactionBank createTransactionBank(User user, String iban, float amount) {
-        TransactionBank transaction = new TransactionBank();
-        transaction.setUser(user);
-        transaction.setAccountNumber(Double.parseDouble(iban));
-        transaction.setAmount(amount);
-        transaction.setDate(new Date());
+        User userConnected = userService.getByEmail(user.getEmail());
+        TransactionBank transaction = new TransactionBank(user, amount);
+        userConnected.setWallet(userConnected.getWallet() + amount);
         transactionBankRepository.save(transaction);
-        return transaction;
+
+
     }
 }
+

@@ -26,7 +26,7 @@ public class profilController {
     @GetMapping
     public String getProfil(Model model){
 
-        String userPrincipalEmail = userService.getUserMail();
+        String userPrincipalEmail = UserService.getUserMail();
         User user = new User();
 
         user = userService.getByEmail(userPrincipalEmail);

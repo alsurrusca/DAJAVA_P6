@@ -2,6 +2,7 @@ package com.openclassromms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -47,6 +48,13 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<User> contacts = new ArrayList<>();
 
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(name = "user_id")
+    private List<BankAccount> bankAccountList = new ArrayList<>();
 
 
     public void addContact(User user) {
@@ -127,4 +135,11 @@ public class User {
     }
 
 
+    public List<BankAccount> getBankAccountList() {
+        return bankAccountList;
+    }
+
+    public void setBankAccountList(List<BankAccount> bankAccountList) {
+        this.bankAccountList = bankAccountList;
+    }
 }

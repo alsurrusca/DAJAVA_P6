@@ -40,14 +40,15 @@ public class SignupController {
     }
 
     @PostMapping
-    public String newUser(@ModelAttribute("createUser") UserDTO user){
+    public String newUser(@ModelAttribute("createUser") UserDTO user, RedirectAttributes redir){
         if(userService.getByEmail(user.getEmail()) == null) {
             userService.createUser(user);
+            redir.addFlashAttribute("createUserSuccess", "OK");
             log.info("Success create user");
             return "redirect:/login";
         }
 
-        return "signupError";
+        return "login";
     }
 
 }

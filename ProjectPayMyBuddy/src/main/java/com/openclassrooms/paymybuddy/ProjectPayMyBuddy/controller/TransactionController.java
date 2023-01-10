@@ -1,23 +1,19 @@
 package com.openclassromms.paymybuddy.ProjectPayMyBuddy.controller;
 
-import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.TransactionDto;
+
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.Transaction;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.User;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.service.TransactionService;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.service.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.nio.file.attribute.UserPrincipal;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -32,20 +28,37 @@ public class TransactionController {
 
     Logger log = LoggerFactory.getLogger(TransactionController.class);
 
-    //Make transaction
+
     @GetMapping
-    public String transfer(){
+    public String transfer(Model model, Principal user){
+
+        User userConnected = userService.getByEmail(user.getName());
+        List<Transaction> listTransaction = userConnected.getTransactions();
+        User userFriend = userService.getByEmail(user.getName());
+        List<User> listOfUser = userFriend.getContacts();
+        model.addAttribute("users", listOfUser);
+        model.addAttribute("listTransaction", listTransaction);
+
         return "transfer";
     }
 
+    /**
+     *
+     * @param user
+     * @param debiteur
+     * @param amount
+     * @param comment
+     * @param Redir
+     * @return tranfer - SEND MONEY SUCCESS
+     */
+
     @PostMapping
-    public String sendMoney(@AuthenticationPrincipal UserPrincipal user, String userDebtorEmail,
-                            float amount, String description, RedirectAttributes Redir) {
-        User userConnected = userService.getByEmail(user.getName());
+    public String sendMoney(Principal user, String debiteur, float amount, String comment, RedirectAttributes Redir) {
 
+        User owner = userService.getByEmail(user.getName());
 
-        if (amount > 0 && amount <= userConnected.getWallet()) {
-            transactionService.makePayment((User) user, userDebtorEmail, description, amount);
+        if (amount > 0 && amount <= owner.getWallet()) {
+            transactionService.makePayment(owner, debiteur, comment, amount);
             Redir.addFlashAttribute("transactionsuccess", "OK");
             return "redirect:/transfer";
         } else {
@@ -54,6 +67,8 @@ public class TransactionController {
             return "redirect:/transfer";
         }
     }
+
+
 
 
 }

@@ -112,18 +112,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-/**
-    public User saveUser(UserDTO user) {
-        User user1 = new User();
-        user1.setFirstName(user.getFirstName());
-        user1.setName(user.getName());
-        user1.setEmail(user.getEmail());
-        user1.setPassword(encoder.encode(user.getPassword()));
-        user1.setWallet(user.getWallet());
-        return userRepository.save(user1);
-    }
 
- **/
 
 public static String getUserMail() {
     SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -135,7 +124,6 @@ public static String getUserMail() {
         userName = userDetails.getUsername();
 
     }
-    //log.debug("Negative Balance exception trigerred");
     return userName;
 }
 

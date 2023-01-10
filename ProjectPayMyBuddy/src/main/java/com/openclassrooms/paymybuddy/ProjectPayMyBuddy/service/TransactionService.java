@@ -1,23 +1,22 @@
 package com.openclassromms.paymybuddy.ProjectPayMyBuddy.service;
 
-import com.openclassromms.paymybuddy.ProjectPayMyBuddy.DTO.TransactionDto;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.Transaction;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.model.User;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository.TransactionRepository;
 import com.openclassromms.paymybuddy.ProjectPayMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
 public class TransactionService {
 
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
@@ -27,20 +26,21 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    /**
-     * Check payment - User1 has enough money and have contact
-     *
-     * @param fromUser - User who send money
-     * @param toUser   - User receiving money
-     * @param total    - the amount + fee
-     * @return true = authorized | false = not authorizes
-     */
-    private boolean paymentAuthorized(User fromUser, User toUser, double total) {
-        return fromUser.getWallet() > total && fromUser.getContacts().contains(toUser);
-    }
 
-    public void makePayment(User userCreditor, String userDebtorEmail, String comment, float amount) {
-        User userDebiteur = userService.getByEmail(userDebtorEmail);
+        public List<Transaction> getAllTransaction(){
+            return transactionRepository.findAll();
+        }
+
+        public List<Transaction> findAll(){
+        return transactionRepository.findAll();
+        }
+
+        public Optional<Transaction> getTransactionById(Integer id){
+        return transactionRepository.findById(id);
+        }
+
+    public void makePayment(User userCreditor, String debitor, String comment, float amount) {
+        User userDebiteur = userService.getByEmail(debitor);
         LocalDateTime inTime = LocalDateTime.now();
         float fee = amount * FEE;
 
@@ -53,6 +53,8 @@ public class TransactionService {
             userDebiteur.setWallet(userDebiteur.getWallet() + (amount - fee));
             transactionRepository.save(transaction);
         }
+    }
+
 
     }
-}
+

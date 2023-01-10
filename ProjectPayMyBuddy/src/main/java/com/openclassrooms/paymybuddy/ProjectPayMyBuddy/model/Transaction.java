@@ -33,7 +33,13 @@ public class Transaction {
     @Column(name = "fee")
     private float fee;
 
-    public Transaction(User userCreditor, User userDebiteur, float amount, LocalDateTime inTime, String comment, float fee) {
+
+    private static final float FEE = 0.005f;
+
+    public Transaction(){}
+
+    public Transaction(int transaction_id, User userCreditor, User userDebiteur, float amount, LocalDateTime inTime, String comment, float fee) {
+        this.transaction_id = transaction_id;
         this.crediteur = userCreditor;
         this.debiteur = userDebiteur;
         this.cost = amount;
@@ -42,7 +48,26 @@ public class Transaction {
         this.fee = amount * FEE;
     }
 
-    private static final float FEE = 0.005f;
+    public Transaction(User userCreditor, User userDebiteur, float amount, LocalDateTime inTime, String comment, float fee) {
+
+        this.crediteur = userCreditor;
+        this.debiteur = userDebiteur;
+        this.cost = amount;
+        this.date = inTime;
+        this.comment = comment;
+        this.fee = amount * FEE;
+    }
+
+
+
+
+    public float amountNet(){
+        this.cost = cost - (cost * FEE);
+        return this.cost;
+    }
+
+
+
 
     public int getTransaction_id() {
         return transaction_id;

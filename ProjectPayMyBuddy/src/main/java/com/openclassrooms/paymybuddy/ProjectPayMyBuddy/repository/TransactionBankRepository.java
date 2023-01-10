@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface TransactionBankRepository extends CrudRepository <TransactionBank, Integer> {
-    List<TransactionBank> findAllByUser(User user);
+    List<TransactionBank> findAll();
+    TransactionBank save(TransactionBank transactionBank);
+
 }

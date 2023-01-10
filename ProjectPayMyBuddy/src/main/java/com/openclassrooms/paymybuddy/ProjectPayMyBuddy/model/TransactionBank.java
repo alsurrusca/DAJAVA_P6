@@ -1,6 +1,7 @@
 package com.openclassromms.paymybuddy.ProjectPayMyBuddy.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,22 +14,28 @@ public class TransactionBank {
     private int transactionBankId;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "date")
-    private Date date;
-
-    @Column(name = "accountNumber")
-    private double accountNumber;
-
-    @Column(name = "account")
-    private String account;
-
-    @Column(name="comment")
-    private String comment;
-
-    @Column(name="amount")
+    @ManyToOne
+    @JoinColumn(name="bankaccount_id")
+    private BankAccount bankAccount;
+    @Column(name = "amount")
     private float amount;
+
+    @Column(name = "inTime")
+    private LocalDateTime inTime;
+
+    @Column(name = "operation_type")
+    private String operationType;
+
+
+    public TransactionBank(){}
+
+    public TransactionBank(User user, float amount) {
+        this.user = user;
+        this.amount = amount;
+    }
 
 
     public int getTransactionBankId() {
@@ -39,32 +46,20 @@ public class TransactionBank {
         this.transactionBankId = transactionBankId;
     }
 
-    public Date getDate(Date date) {
-        return this.date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public User getUser() {
         return user;
     }
 
-    public double getAccountNumber(Long accountNumber) {
-        return this.accountNumber;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setAccountNumber(double accountNumber) {
-        this.accountNumber = accountNumber;
+    public BankAccount getBankAccount() {
+        return bankAccount;
     }
 
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
     }
 
     public float getAmount() {
@@ -75,19 +70,19 @@ public class TransactionBank {
         this.amount = amount;
     }
 
-    public String getComment(String comment) {
-        return this.comment;
+    public LocalDateTime getInTime() {
+        return inTime;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setInTime(LocalDateTime inTime) {
+        this.inTime = inTime;
     }
 
-    public User getUser(User user) {
-        return this.user;
+    public String getOperationType() {
+        return operationType;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 }
